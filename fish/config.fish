@@ -68,6 +68,8 @@ if status is-interactive
     abbr ani 'anifetch -w=71 /home/juanes/Videos/man.mp4'
     abbr snake 'nsnake'
     abbr tetris 'vitetris'
+    abbr rice '~/.config/caelestia/patches/caelestia-rice/apply-rice-patches.sh'
+    abbr fetch 'fetch --logo ~/.config/fetch/logo.txt --rotate-y'
 
     # Custom colours
     cat ~/.local/state/caelestia/sequences.txt 2> /dev/null
