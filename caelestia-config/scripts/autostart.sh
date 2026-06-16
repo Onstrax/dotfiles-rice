@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Función para lanzar apps con un pequeño retraso
+launch() {
+    $1 &
+    sleep 0.5
+}
+
+# 1. Apps con clase personalizada (para que la regla solo les afecte a ellas)
+launch "brave --class=brave-init"    # Brave usa el signo =
+launch "foot --title foot-init"      # Usaremos el título para foot
+launch "dolphin"
+
+# 2. El resto de aplicaciones
+launch "vesktop"
+launch "gtk-launch WebApp-WhatsApp2579"
+launch "obsidian"
+launch "solanum"
+launch "code"
+launch "github-desktop-plus"
+launch "gtk-launch WebApp-Gmail1773"
+launch "gtk-launch WebApp-Outlook3829"
+launch "prime-run steam"
+launch "gtk-launch yt-music.desktop"
