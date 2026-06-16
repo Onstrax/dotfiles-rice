@@ -144,7 +144,7 @@ Item {
         }
     }
 
-    component OldCpuGpuCard: StyledRect {
+    component OldCpuGpuCard: StyledClippingRect {
         id: heroCard
 
         property string icon
