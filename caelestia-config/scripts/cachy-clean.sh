@@ -42,13 +42,9 @@ MAX_BACKUPS=5
 
 mkdir -p "$BACKUP_DIR"
 
-# Formato:
-# "origen|nombre-amigable-en-backup|requiere-sudo"
 RUTAS_BACKUP=(
-    "/home/juanes/.config/caelestia|home-config-caelestia|no"
-    "/home/juanes/.config/quickshell/caelestia|home-config-quickshell-caelestia|no"
-    "/home/juanes/.config/hypr|home-config-hypr|no"
-    "/home/juanes/.local/share/caelestia/hypr|home-local-share-caelestia-hypr|no"
+    "/home/juanes/dotfiles-rice|repo-dotfiles-rice|no"
+    "/home/juanes/.config/quickshell/caelestia|repo-caelestia-rice|no"
     "/etc/xdg/quickshell/caelestia|etc-xdg-quickshell-caelestia|yes"
 )
 
@@ -58,7 +54,6 @@ for item in "${RUTAS_BACKUP[@]}"; do
 
     if [ -d "$origen" ]; then
         echo -e "   Backup: $origen -> $destino"
-
         mkdir -p "$destino"
 
         if [ "$requiere_sudo" = "yes" ]; then
