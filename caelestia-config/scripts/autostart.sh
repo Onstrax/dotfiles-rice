@@ -7,7 +7,7 @@ launch() {
 }
 
 # 1. Apps con clase personalizada (para que la regla solo les afecte a ellas)
-launch "brave --class=brave-init"    # Brave usa el signo =
+launch "zen-browser --class=zen-init"    # Brave usa el signo =
 launch "foot --title foot-init"      # Usaremos el título para foot
 launch "dolphin"
 
