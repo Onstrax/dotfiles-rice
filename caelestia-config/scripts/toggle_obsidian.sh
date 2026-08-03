@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Comprobamos si hay alguna ventana con la clase "obsidian"
-if hyprctl clients | grep -q "class: obsidian"
+if hyprctl clients | grep -q "class: md.Obsidian"
 then
     # Si ya está abierto, viajamos al workspace 5
     hyprctl dispatch workspace 5
