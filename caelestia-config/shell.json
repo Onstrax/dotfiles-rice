@@ -138,7 +138,7 @@
             "activeIndicator": true,
             "activeLabel": "󰮯",
             "activeTrail": false,
-            "capitalisation": "preserve",
+            "capitalisation": "Preserve",
             "label": "  ",
             "maxWindowIcons": 0,
             "occupiedBg": true,
@@ -538,8 +538,12 @@
         "vpn": {
             "enabled": false,
             "provider": [
-                "netbird"
-            ]
+                {
+                    "id": "vpn-mtj63v4k-6cfzc",
+                    "name": "netbird"
+                }
+            ],
+            "selectedProvider": "vpn-mtj63v4k-6cfzc"
         }
     }
 }

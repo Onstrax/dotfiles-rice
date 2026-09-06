@@ -83,8 +83,13 @@ fi
 echo -e "${GREEN}✅ Backup creado en: ${BACKUP_DIR}${NC}"
 echo -e "${GREEN}✅ Backups finalizados.${NC}\n"
 
-# 1. Actualización de Sistema y AUR
-echo -e "${YELLOW}🔹 1/10 Actualizando sistema y paquetes AUR...${NC}"
+# 1. Optimizar Mirrors (CachyOS específico)
+echo -e "\n${YELLOW}🔹 1/10 Optimizando espejos (Mirrors) para máxima velocidad...${NC}"
+sudo cachyos-rate-mirrors
+sudo pacman -Sy
+
+# 2. Actualización de Sistema y AUR
+echo -e "${YELLOW}🔹 2/10 Actualizando sistema y paquetes AUR...${NC}"
 if command -v yay &> /dev/null; then
     yay -Syu --noconfirm
 else
@@ -94,33 +99,28 @@ fi
 echo -e "${YELLOW}   ➔ Sincronizando plugins de Hyprland...${NC}"
 hyprpm update && hyprpm reload
 
-# 2. Limpieza de Caché de Paquetes
-echo -e "\n${YELLOW}🔹 2/10 Limpiando caché de paquetes antiguos (dejando los últimos 2)...${NC}"
+# 3. Limpieza de Caché de Paquetes
+echo -e "\n${YELLOW}🔹 3/10 Limpiando caché de paquetes antiguos (dejando los últimos 2)...${NC}"
 sudo rm -rf /var/cache/pacman/pkg/download-*
 sudo paccache -r -k 2
 yay -Sc --noconfirm
 
-# 3. Limpieza de Logs
-echo -e "\n${YELLOW}🔹 3/10 Limpiando registros del sistema (logs) mayores a 7 días...${NC}"
+# 4. Limpieza de Logs
+echo -e "\n${YELLOW}🔹 4/10 Limpiando registros del sistema (logs) mayores a 7 días...${NC}"
 sudo journalctl --vacuum-time=7d
 
-# 4. Btrfs: Mantenimiento del Sistema de Archivos
-echo -e "\n${YELLOW}🔹 4/10 Revisando y balanceando Btrfs...${NC}"
+# 5. Btrfs: Mantenimiento del Sistema de Archivos
+echo -e "\n${YELLOW}🔹 5/10 Revisando y balanceando Btrfs...${NC}"
 sudo btrfs filesystem df /
 sudo btrfs balance start -dusage=75 -musage=75 / || echo "No se requería balanceo pesado."
 
-# 5. Limpiar Dependencias Huérfanas
-echo -e "\n${YELLOW}🔹 5/10 Eliminando paquetes huérfanos...${NC}"
+# 6. Limpiar Dependencias Huérfanas
+echo -e "\n${YELLOW}🔹 6/10 Eliminando paquetes huérfanos...${NC}"
 if [ -n "$(pacman -Qdtq)" ]; then
     sudo pacman -Rns $(pacman -Qdtq) --noconfirm
 else
     echo -e "${GREEN}No hay huérfanos que limpiar.${NC}"
 fi
-
-# 6. Optimizar Mirrors (CachyOS específico)
-echo -e "\n${YELLOW}🔹 6/10 Optimizando espejos (Mirrors) para máxima velocidad...${NC}"
-sudo cachyos-rate-mirrors
-sudo pacman -Sy
 
 # 7. SSD Trim
 echo -e "\n${YELLOW}🔹 7/10 Optimizando celdas del SSD (fstrim)...${NC}"
