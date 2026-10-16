@@ -151,7 +151,9 @@
             ],
             "windowIcons": [
                 {
+                    "flags": "",
                     "icon": "sports_esports",
+                    "name": "",
                     "regex": "steam(_app_(default|[0-9]+))?"
                 }
             ]
@@ -196,12 +198,14 @@
             "criticalLevel": 3,
             "warnLevels": [
                 {
+                    "critical": false,
                     "icon": "battery_android_frame_2",
                     "level": 20,
                     "message": "You might want to plug in a charger",
                     "title": "Low battery"
                 },
                 {
+                    "critical": false,
                     "icon": "battery_android_frame_1",
                     "level": 10,
                     "message": "You should probably plug in a charger <b>now</b>",
@@ -221,19 +225,31 @@
             "lockBeforeSleep": true,
             "timeouts": [
                 {
+                    "enabled": true,
                     "idleAction": "lock",
+                    "inhibitWhenAudio": false,
+                    "inhibitWhenCharging": false,
+                    "respectInhibitors": true,
                     "timeout": 180
                 },
                 {
+                    "enabled": true,
                     "idleAction": "dpms off",
+                    "inhibitWhenAudio": false,
+                    "inhibitWhenCharging": false,
+                    "respectInhibitors": true,
                     "returnAction": "dpms on",
                     "timeout": 300
                 },
                 {
+                    "enabled": true,
                     "idleAction": [
                         "systemctl",
                         "suspend-then-hibernate"
                     ],
+                    "inhibitWhenAudio": false,
+                    "inhibitWhenCharging": false,
+                    "respectInhibitors": true,
                     "timeout": 600
                 }
             ]
@@ -539,11 +555,17 @@
             "enabled": false,
             "provider": [
                 {
+                    "connectCmd": [
+                    ],
+                    "disconnectCmd": [
+                    ],
+                    "displayName": "",
                     "id": "vpn-mtj63v4k-6cfzc",
+                    "interface": "",
                     "name": "netbird"
                 }
             ],
-            "selectedProvider": "vpn-mtj63v4k-6cfzc"
+            "selectedProvider": ""
         }
     }
 }
