@@ -1,11 +1,22 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Buscamos una ventana de foot que tenga el app-id "scratchpad"
-if hyprctl clients | grep -q "class: scratchpad"
-then
-    # Si existe esa ventana específica, alternamos el espacio
-    hyprctl dispatch togglespecialworkspace term
+# Terminal scratchpad personal
+# Clase: scratchpad
+# Workspace: special:term
+
+exists="$(
+    hyprctl clients -j |
+    jq -r '[.[] | select(.class == "scratchpad")] | length'
+)"
+
+if [[ "$exists" -gt 0 ]]; then
+    # Mostrar u ocultar la terminal existente
+    hyprctl dispatch 'hl.dsp.workspace.toggle_special("term")'
 else
-    # Si no existe, la creamos con el id "scratchpad"
-    hyprctl dispatch exec "[workspace special:term]" "foot --app-id=scratchpad fish"
+    # Mostrar el workspace especial
+    hyprctl dispatch 'hl.dsp.workspace.toggle_special("term")'
+
+    # Abrir una terminal nueva
+    hyprctl dispatch 'hl.dsp.exec_cmd("foot --app-id=scratchpad fish")'
 fi

@@ -1,11 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Comprobamos si hay alguna ventana con la clase "obsidian"
-if hyprctl clients | grep -q "class: md.obsidian.Obsidian"
-then
-    # Si ya está abierto, viajamos al workspace 5
-    hyprctl dispatch workspace 5
+# Obsidian: enfocar si existe; abrir en workspace 5 si no.
+
+address="$(
+    hyprctl clients -j |
+    jq -r '
+        [.[] |
+        select(
+            (.class // "" | ascii_downcase | contains("obsidian"))
+        )] | first | .address // empty
+    '
+)"
+
+if [[ -n "$address" ]]; then
+    # Enfocar la ventana existente, aunque esté en otro workspace
+    hyprctl dispatch "hl.dsp.focus({ window = 'address:${address}' })"
 else
-    # Si no está abierto, lo lanzamos en el workspace 5 de forma silent
-    hyprctl dispatch exec "[workspace 5 silent]" "obsidian"
+    # Cambiar al workspace 5
+    hyprctl dispatch 'hl.dsp.focus({ workspace = "5" })'
+
+    # Iniciar Obsidian con la nueva API
+    hyprctl dispatch 'hl.dsp.exec_cmd("obsidian")'
 fi

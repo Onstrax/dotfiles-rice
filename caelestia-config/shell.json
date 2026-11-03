@@ -56,7 +56,8 @@
         "clock": {
             "background": true,
             "showDate": true,
-            "showIcon": true
+            "showIcon": true,
+            "showSeconds": false
         },
         "dragThreshold": 20,
         "entries": [
@@ -101,8 +102,7 @@
                 "id": "power"
             }
         ],
-        "excludedScreens": [
-        ],
+        "excludedScreens": [],
         "persistent": true,
         "popouts": {
             "activeWindow": true,
@@ -115,23 +115,11 @@
             "workspaces": true
         },
         "showOnHover": true,
-        "status": {
-            "showAudio": true,
-            "showBattery": true,
-            "showBluetooth": true,
-            "showKbLayout": false,
-            "showLockStatus": false,
-            "showMicrophone": false,
-            "showNetwork": true,
-            "showWifi": true
-        },
         "tray": {
             "background": true,
             "compact": false,
-            "hiddenIcons": [
-            ],
-            "iconSubs": [
-            ],
+            "hiddenIcons": [],
+            "iconSubs": [],
             "recolour": false
         },
         "workspaces": {
@@ -143,12 +131,10 @@
             "maxWindowIcons": 0,
             "occupiedBg": true,
             "occupiedLabel": "󰮯",
-            "perMonitorWorkspaces": true,
             "showWindows": false,
             "showWindowsOnSpecialWorkspaces": false,
             "shown": 5,
-            "specialWorkspaceIcons": [
-            ],
+            "specialWorkspaceIcons": [],
             "windowIcons": [
                 {
                     "flags": "",
@@ -408,10 +394,8 @@
         "dragThreshold": 50,
         "enableDangerousActions": false,
         "enabled": true,
-        "favouriteApps": [
-        ],
-        "hiddenApps": [
-        ],
+        "favouriteApps": [],
+        "hiddenApps": [],
         "maxShown": 7,
         "maxWallpapers": 9,
         "showOnHover": true,
@@ -456,7 +440,7 @@
         "audioIncrement": 0.01,
         "brightnessIncrement": 0.01,
         "defaultPlayer": "YT Music",
-        "gpuType": "",
+        "gpuType": "Auto",
         "maxVolume": 1.2,
         "playerAliases": [
             {
@@ -465,9 +449,6 @@
             }
         ],
         "smartScheme": true,
-        "useFahrenheit": false,
-        "useFahrenheitPerformance": false,
-        "useTwelveHourClock": false,
         "visualiserBars": 45,
         "weatherLocation": ""
     },
@@ -555,17 +536,15 @@
             "enabled": false,
             "provider": [
                 {
-                    "connectCmd": [
-                    ],
-                    "disconnectCmd": [
-                    ],
+                    "connectCmd": [],
+                    "disconnectCmd": [],
                     "displayName": "",
                     "id": "vpn-mtj63v4k-6cfzc",
                     "interface": "",
                     "name": "netbird"
                 }
             ],
-            "selectedProvider": ""
+            "selectedProvider": "vpn-mtj63v4k-6cfzc"
         }
     }
 }

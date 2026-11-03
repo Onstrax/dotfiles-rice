@@ -10,28 +10,6 @@ BOLD='\033[1m'
 
 echo -e "${BLUE}${BOLD}🚀 Iniciando Mantenimiento Integral de CachyOS${NC}\n"
 
-# # 0. Backups de Seguridad (Configuraciones críticas)
-# echo -e "${YELLOW}🔹 0/10 Creando copias de seguridad (.bak)...${NC}"
-
-# # Lista de directorios a respaldar
-# DIRECTORIOS=(
-#     "/home/juanes/.config/hypr"
-#     "/home/juanes/.config/caelestia"
-#     "/etc/xdg/quickshell/caelestia"
-# )
-
-# for dir in "${DIRECTORIOS[@]}"; do
-#     if [ -d "$dir" ]; then
-#         echo -e "   Backing up: $dir -> ${dir}.bak"
-#         # rsync -a: mantiene permisos y es recursivo
-#         # --delete: borra en el .bak lo que ya no existe en el origen
-#         sudo rsync -a --delete "${dir}/" "${dir}.bak/"
-#     else
-#         echo -e "${RED}   ⚠️  Advertencia: $dir no existe, saltando...${NC}"
-#     fi
-# done
-# echo -e "${GREEN}✅ Backups finalizados.${NC}\n"
-
 # 0. Backups de Seguridad (Configuraciones críticas)
 echo -e "${YELLOW}🔹 0/10 Creando backups con timestamp...${NC}"
 
@@ -44,6 +22,9 @@ mkdir -p "$BACKUP_DIR"
 
 RUTAS_BACKUP=(
     "/home/juanes/dotfiles-rice|repo-dotfiles-rice|no"
+    "/home/juanes/.config/hypr|hypr-activo|no"
+    "/home/juanes/.config/caelestia|caelestia-config-activa|no"
+    "/home/juanes/.config/fish|fish-activo|no"
     "/home/juanes/.config/quickshell/caelestia|repo-caelestia-rice|no"
     "/etc/xdg/quickshell/caelestia|etc-xdg-quickshell-caelestia|yes"
 )
@@ -57,15 +38,19 @@ for item in "${RUTAS_BACKUP[@]}"; do
         mkdir -p "$destino"
 
         if [ "$requiere_sudo" = "yes" ]; then
-            sudo rsync -a --delete --chown=juanes:juanes "${origen}/" "${destino}/"
+            sudo rsync -a --delete --chown=juanes:juanes \
+                "${origen}/" "${destino}/" || exit 1
         else
-            rsync -a --delete "${origen}/" "${destino}/"
+           rsync -a --delete \
+               "${origen}/" "${destino}/" || exit 1
         fi
     else
-        echo -e "${RED}   ⚠️  Advertencia: $origen no existe, saltando...${NC}"
+        echo -e "${RED}   ✖ Falta una ruta de backup: $origen. No se rotarán backups.${NC}"
+        exit 1
     fi
 done
 
+# Solo rotar después de que todas las copias finalizaron sin errores.
 echo -e "   Rotando backups: conservando solo los ${MAX_BACKUPS} más recientes..."
 
 if [ -n "$BACKUP_ROOT" ] && [ -d "$BACKUP_ROOT" ]; then
@@ -85,25 +70,36 @@ echo -e "${GREEN}✅ Backups finalizados.${NC}\n"
 
 # 1. Optimizar Mirrors (CachyOS específico)
 echo -e "\n${YELLOW}🔹 1/10 Optimizando espejos (Mirrors) para máxima velocidad...${NC}"
-sudo cachyos-rate-mirrors
-sudo pacman -Sy
+sudo cachyos-rate-mirrors || { echo -e "${RED}Falló la actualización de mirrors.${NC}"; exit 1; }
+# Evitar pacman -Sy aislado (sincronización sin actualización): yay/pacman -Syu lo hace junto.
 
 # 2. Actualización de Sistema y AUR
 echo -e "${YELLOW}🔹 2/10 Actualizando sistema y paquetes AUR...${NC}"
 if command -v yay &> /dev/null; then
-    yay -Syu --noconfirm
+    yay -Syu --noconfirm || { echo -e "${RED}La actualización falló; se cancela la limpieza.${NC}"; exit 1; }
 else
-    sudo pacman -Syu --noconfirm
+    sudo pacman -Syu --noconfirm || { echo -e "${RED}La actualización falló; se cancela la limpieza.${NC}"; exit 1; }
 fi
 # Sincronizar plugins de Hyprland inmediatamente
 echo -e "${YELLOW}   ➔ Sincronizando plugins de Hyprland...${NC}"
-hyprpm update && hyprpm reload
+if command -v hyprpm >/dev/null 2>&1; then
+    if hyprpm update; then
+        if ! hyprpm reload; then
+            echo -e "${RED}⚠️ Falló la recarga de plugins de Hyprland.${NC}"
+        fi
+    else
+        echo -e "${RED}⚠️ Falló la actualización de plugins. No se recargarán.${NC}"
+    fi
+fi
 
 # 3. Limpieza de Caché de Paquetes
 echo -e "\n${YELLOW}🔹 3/10 Limpiando caché de paquetes antiguos (dejando los últimos 2)...${NC}"
-sudo rm -rf /var/cache/pacman/pkg/download-*
+# Eliminar solo directorios temporales (no tocar otros archivos de caché).
+sudo find /var/cache/pacman/pkg -mindepth 1 -maxdepth 1 -type d -name 'download-*' -exec rm -rf -- {} +
 sudo paccache -r -k 2
-yay -Sc --noconfirm
+if command -v yay >/dev/null 2>&1; then
+    yay -Sc --noconfirm
+fi
 
 # 4. Limpieza de Logs
 echo -e "\n${YELLOW}🔹 4/10 Limpiando registros del sistema (logs) mayores a 7 días...${NC}"
@@ -112,12 +108,16 @@ sudo journalctl --vacuum-time=7d
 # 5. Btrfs: Mantenimiento del Sistema de Archivos
 echo -e "\n${YELLOW}🔹 5/10 Revisando y balanceando Btrfs...${NC}"
 sudo btrfs filesystem df /
-sudo btrfs balance start -dusage=75 -musage=75 / || echo "No se requería balanceo pesado."
+if ! sudo btrfs balance start -dusage=75 -musage=75 /; then
+    echo -e "${RED}⚠️ Falló el balanceo Btrfs; comprueba: sudo btrfs balance status /${NC}"
+fi
 
 # 6. Limpiar Dependencias Huérfanas
 echo -e "\n${YELLOW}🔹 6/10 Eliminando paquetes huérfanos...${NC}"
-if [ -n "$(pacman -Qdtq)" ]; then
-    sudo pacman -Rns $(pacman -Qdtq) --noconfirm
+mapfile -t paquetes_huerfanos < <(pacman -Qdtq)
+if ((${#paquetes_huerfanos[@]})); then
+    printf '   Huérfanos: %s\n' "${paquetes_huerfanos[*]}"
+    sudo pacman -Rns --noconfirm -- "${paquetes_huerfanos[@]}"
 else
     echo -e "${GREEN}No hay huérfanos que limpiar.${NC}"
 fi
@@ -128,15 +128,17 @@ sudo fstrim -v /
 
 # 8. Actualizar DB de búsqueda (plocate)
 echo -e "\n${YELLOW}🔹 8/10 Indexando archivos para búsqueda rápida (updatedb)...${NC}"
-sudo updatedb
+sudo ionice -c3 nice -n 10 updatedb
 
 # 9. Diagnóstico Final
 echo -e "\n${BLUE}${BOLD}🔍 Diagnóstico de errores:${NC}"
-FAILED_SERVICES=$(systemctl --failed --quiet | grep "loaded" | wc -l)
+FAILED_SERVICES=$(systemctl --failed --no-legend --plain | grep -c . || true)
 if [ "$FAILED_SERVICES" -eq "0" ]; then
     echo -e "${GREEN}✅ No hay servicios fallidos.${NC}"
 else
     echo -e "${RED}❌ Hay $FAILED_SERVICES servicios fallidos. Revisa con: systemctl --failed${NC}"
 fi
 
-echo -e "\n${GREEN}${BOLD}✨ Mantenimiento completado con éxito.${NC}"
+echo -e "\n${BLUE}Espacio libre final:${NC}"
+df -h / /home
+echo -e "\n${GREEN}${BOLD}✨ Mantenimiento completado.${NC}"
