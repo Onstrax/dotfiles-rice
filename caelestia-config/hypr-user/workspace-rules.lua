@@ -27,7 +27,7 @@ hl.window_rule({
 
 -- Workspace 2: VS Code
 hl.window_rule({
-    match = { class = "^(code|code-oss)$" },
+    match = { class = "^(code|code-oss|com[.]microsoft[.]VSCode)$" },
     workspace = "2 silent",
 })
 

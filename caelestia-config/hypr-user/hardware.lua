@@ -28,7 +28,8 @@ hl.bind(
     hl.dsp.exec_cmd(
         os.getenv("HOME")
         .. "/.config/caelestia/scripts/color_luz.sh"
-    )
+    ),
+    { locked = true }
 )
 
 -- ==========================================
@@ -55,13 +56,15 @@ local rgb_script =
 -- F7: apagar, conservando el último efecto
 hl.bind(
     "F7",
-    hl.dsp.exec_cmd(rgb_script .. " off")
+    hl.dsp.exec_cmd(rgb_script .. " off"),
+    { locked = true }
 )
 
 -- F8: restaurar si está apagado; avanzar si está encendido
 hl.bind(
     "F8",
-    hl.dsp.exec_cmd(rgb_script .. " next")
+    hl.dsp.exec_cmd(rgb_script .. " next"),
+    { locked = true }
 )
 
 -- ==========================================
@@ -70,15 +73,18 @@ hl.bind(
 
 hl.bind(
     "F9",
-    hl.dsp.exec_cmd("playerctl play-pause")
+    hl.dsp.exec_cmd("playerctl play-pause"),
+    { locked = true }
 )
 
 hl.bind(
     "F10",
-    hl.dsp.exec_cmd("playerctl previous")
+    hl.dsp.exec_cmd("playerctl previous"),
+    { locked = true }
 )
 
 hl.bind(
     "F11",
-    hl.dsp.exec_cmd("playerctl next")
+    hl.dsp.exec_cmd("playerctl next"),
+    { locked = true }
 )

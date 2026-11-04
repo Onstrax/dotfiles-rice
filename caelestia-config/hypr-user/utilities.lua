@@ -28,7 +28,8 @@ hl.bind(
     hl.dsp.exec_cmd(
         os.getenv("HOME")
         .. "/.config/caelestia/scripts/lock_and_suspend.sh"
-    )
+    ),
+    { locked = true }
 )
 
 -- ==========================================

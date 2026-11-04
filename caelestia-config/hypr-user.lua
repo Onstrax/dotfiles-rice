@@ -23,7 +23,7 @@ require("hypr-user.autostart")
 
 hl.config({
     input = {
-        kb_layout = "us,latam",
+        kb_layout = "latam,us",
         kb_variant = ",",
     },
 })

@@ -85,7 +85,7 @@ hl.unbind("SUPER + C")
 hl.bind(
     "SUPER + C",
     hl.dsp.exec_cmd(
-        "~/.config/caelestia/scripts/focus_or_launch.sh '^(code|code-oss)$' code"
+        "~/.config/caelestia/scripts/focus_or_launch.sh '^(code|code-oss|com[.]microsoft[.]VSCode)$' code"
     )
 )
 
@@ -144,7 +144,8 @@ hl.bind(
     "SUPER + Space",
     hl.dsp.exec_cmd(
         "hyprctl switchxkblayout at-translated-set-2-keyboard next"
-    )
+    ),
+    { locked = true }
 )
 
 -- ==========================================
