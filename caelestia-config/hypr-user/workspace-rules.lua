@@ -116,3 +116,22 @@ hl.window_rule({
     },
     workspace = "10 silent",
 })
+
+-- ==========================================
+-- OnlyOffice: siempre en mosaico
+-- ==========================================
+
+hl.window_rule({
+    match = { class = "^onlyoffice-desktopeditors$" },
+    tile = true,
+})
+
+-- ==========================================
+-- eDEX-UI: abrir en pantalla completa
+-- ==========================================
+
+hl.window_rule({
+    match = { class = "^eDEX-UI$" },
+    fullscreen = true,
+})
+
