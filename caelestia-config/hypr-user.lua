@@ -17,6 +17,13 @@ require("hypr-user.utilities")
 -- Inicio automático de aplicaciones personales
 require("hypr-user.autostart")
 
+-- Evitar eventos duplicados de brillo del dispositivo ACPI.
+-- Las teclas Fn siguen funcionando desde el teclado principal.
+hl.device({
+    name = "video-bus",
+    keybinds = false,
+})
+
 -- ==========================================
 -- Distribuciones de teclado personales
 -- ==========================================

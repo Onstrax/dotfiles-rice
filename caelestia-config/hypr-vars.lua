@@ -5,6 +5,9 @@ return {
     editor       = "code",
     fileExplorer = "dolphin",
 
+    -- Incremento del volumen: 1 punto porcentual
+    volumeStep = 1,
+
     -- Reubicación de atajos originales de Caelestia
     kbSpecialWs       = "CTRL + SUPER + S",
     kbCommunicationWs = "CTRL + SUPER + D",
